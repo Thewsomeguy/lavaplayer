@@ -51,7 +51,7 @@ public class YoutubeSearchProvider implements YoutubeSearchResultLoader {
 
     try (HttpInterface httpInterface = httpInterfaceManager.getInterface()) {
       HttpPost post = new HttpPost(SEARCH_URL);
-      YoutubeClientConfig clientConfig = YoutubeClientConfig.ANDROID.copy()
+      YoutubeClientConfig clientConfig = YoutubeClientConfig.WEB.copy()
         .withRootField("query", query)
         .withRootField("params", SEARCH_PARAMS)
         .setAttribute(httpInterface);
@@ -91,6 +91,8 @@ public class YoutubeSearchProvider implements YoutubeSearchResultLoader {
   private List<AudioTrack> extractSearchPage(JsonBrowser jsonBrowser, Function<AudioTrackInfo, AudioTrack> trackFactory) throws IOException {
     ArrayList<AudioTrack> list = new ArrayList<>();
     jsonBrowser.get("contents")
+      .get("twoColumnSearchResultsRenderer")
+      .get("primaryContents")
       .get("sectionListRenderer")
       .get("contents")
       .values() // .index(0)
@@ -106,7 +108,7 @@ public class YoutubeSearchProvider implements YoutubeSearchResultLoader {
   }
 
   private AudioTrack extractPolymerData(JsonBrowser json, Function<AudioTrackInfo, AudioTrack> trackFactory) {
-    json = json.get("compactVideoRenderer");
+    json = json.get("videoRenderer");
     if (json.isNull()) return null; // Ignore everything which is not a track
 
     String title = json.get("title").get("runs").index(0).get("text").text();
@@ -114,7 +116,7 @@ public class YoutubeSearchProvider implements YoutubeSearchResultLoader {
     if (json.get("lengthText").isNull()) {
       return null; // Ignore if the video is a live stream
     }
-    long duration = DataFormatTools.durationTextToMillis(json.get("lengthText").get("runs").index(0).get("text").text());
+    long duration = DataFormatTools.durationTextToMillis(json.get("lengthText").get("simpleText").text());
     String videoId = json.get("videoId").text();
 
     AudioTrackInfo info = new AudioTrackInfo(title, author, duration, videoId, false,

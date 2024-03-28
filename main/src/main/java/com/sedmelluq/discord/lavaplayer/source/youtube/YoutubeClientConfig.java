@@ -10,14 +10,12 @@ import static com.sedmelluq.discord.lavaplayer.source.youtube.YoutubePayloadHelp
 public class YoutubeClientConfig extends JSONObject {
   public static final AndroidVersion DEFAULT_ANDROID_VERSION = AndroidVersion.ANDROID_11;
 
-  public static YoutubeClientConfig ANDROID = new YoutubeClientConfig()
-    .withApiKey(INNERTUBE_ANDROID_API_KEY)
-    .withUserAgent(String.format("com.google.android.youtube/%s (Linux; U; Android %s) gzip", CLIENT_ANDROID_VERSION, DEFAULT_ANDROID_VERSION.getOsVersion()))
-    .withClientName(CLIENT_ANDROID_NAME)
-    .withClientField("clientVersion", CLIENT_ANDROID_VERSION)
-    .withClientField("androidSdkVersion", DEFAULT_ANDROID_VERSION.getSdkVersion())
-    //.withClientField("osName", "Android")
-    //.withClientField("osVersion", DEFAULT_ANDROID_VERSION.getOsVersion())
+  public static YoutubeClientConfig IOS = new YoutubeClientConfig()
+    .withApiKey(INNERTUBE_IOS_API_KEY)
+    .withUserAgent(String.format("com.google.ios.youtube/%s (iPhone14,3; U; CPU iOS 15_6 like Mac OS X)", CLIENT_IOS_VERSION))
+    .withClientName(CLIENT_IOS_NAME)
+    .withClientField("clientVersion", CLIENT_IOS_VERSION)
+    .withClientField("deviceVersion", "iPhone14,3")
     .withClientDefaultScreenParameters();
 
   public static YoutubeClientConfig TV_EMBEDDED = new YoutubeClientConfig()
