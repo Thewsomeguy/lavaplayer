@@ -35,7 +35,7 @@ public class DefaultYoutubePlaylistLoader implements YoutubePlaylistLoader {
   public AudioPlaylist load(HttpInterface httpInterface, String playlistId, String selectedVideoId,
                             Function<AudioTrackInfo, AudioTrack> trackFactory) {
     HttpPost post = new HttpPost(BROWSE_URL);
-    YoutubeClientConfig clientConfig = YoutubeClientConfig.IOS.copy()
+    YoutubeClientConfig clientConfig = YoutubeClientConfig.WEB.copy()
       .withRootField("browseId", "VL" + playlistId)
       .setAttribute(httpInterface);
     StringEntity payload = new StringEntity(clientConfig.toJsonString(), "UTF-8");
@@ -64,19 +64,20 @@ public class DefaultYoutubePlaylistLoader implements YoutubePlaylistLoader {
       .get("header")
       .get("playlistHeaderRenderer")
       .get("title")
-      .get("runs")
-      .index(0)
-      .get("text")
+      .get("simpleText")
       .text();
 
     JsonBrowser playlistVideoList = json
       .get("contents")
-      .get("singleColumnBrowseResultsRenderer")
+      .get("twoColumnBrowseResultsRenderer")
       .get("tabs")
       .index(0)
       .get("tabRenderer")
       .get("content")
       .get("sectionListRenderer")
+      .get("contents")
+      .index(0)
+      .get("itemSectionRenderer")
       .get("contents")
       .index(0)
       .get("playlistVideoListRenderer");
